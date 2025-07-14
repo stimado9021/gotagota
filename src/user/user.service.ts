@@ -26,7 +26,7 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
-      relations: ['lean', 'client'],
+      // relations: ['lean', 'client'],
       where: { isActive: true }
     });
   }
@@ -65,7 +65,7 @@ export class UserService {
 
   async findVendedores(): Promise<User[]> {
     return await this.userRepository.find({
-      // where: { role: UserRole.lean, isActive: true },
+      where: { role: UserRole.LENDER, isActive: true },
       // relations: ['clientes']
     });
   }

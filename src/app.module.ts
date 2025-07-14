@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+require('dotenv').config();
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { LoansModule } from './loans/loans.module';
 import { PaymentModule } from './payment/payment.module';
 import { AuthModule } from './auth/auth.module';
 
-
+@Global()
 @Module({
   //'postgresql://neondb_owner:npg_Th3P0LZKVxWq@ep-shiny-frog-a8h3mngk-pooler.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require'
   imports: [
