@@ -1,27 +1,31 @@
-require('dotenv').config();
+
 import { NestFactory } from '@nestjs/core';
-require('dotenv').config();
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
   // Configurar CORS
   app.enableCors({
-    origin: '*', // En producción, especificar dominios exactos
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    origin: configService.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
-  // Configurar pipes de validación globales
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    })
   );
 
   // Configuración de Swagger/OpenAPI
@@ -29,25 +33,7 @@ async function bootstrap() {
     .setTitle('API de Gestión de Usuarios')
     .setDescription(`
       API completa para la gestión de usuarios con autenticación JWT.
-      
-      ## Características principales:
-      
-      * **Autenticación**: Login y registro de usuarios
-      * **Gestión de usuarios**: CRUD completo de usuarios
-      * **Autorización**: Sistema de roles y permisos
-      * **Seguridad**: Tokens JWT para autenticación
-      
-      ## Autenticación
-      
-      Para usar los endpoints protegidos:
-      1. Registrarte o hacer login en /auth/login
-      2. Copiar el token JWT que recibes
-      3. Usar el botón "Authorize" y pegar el token con formato: Bearer <token>
-      
-      ## Roles de usuario
-      
-      - **admin**: Acceso completo a todos los endpoints
-      - **user**: Acceso limitado a endpoints básicos
+     
     `)
     .setVersion('1.0.0')
     .setContact(
@@ -97,10 +83,10 @@ async function bootstrap() {
   // Configurar prefijo global para las rutas
   //app.setGlobalPrefix('api');
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 3001);
 
   console.log(`🚀 Aplicación ejecutándose en: http://localhost:${process.env.PORT}`);
-  console.log(`📚 Documentación Swagger: http://localhost:${process.env.PORT}/api/docs`);
+  //console.log(`📚 Documentación Swagger: http://localhost:${process.env.PORT}/api/docs`);
   //console.log(`🏥 Health check: http://localhost:${process.env.PORT}/api/health`);
 }
 

@@ -1,33 +1,51 @@
-import { Global, Module } from '@nestjs/common';
-require('dotenv').config();
+// src/app.module.ts
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
-import { LoansModule } from './loans/loans.module';
-import { PaymentModule } from './payment/payment.module';
+
 import { AuthModule } from './auth/auth.module';
+import { User } from 'src/user/entities/user.entity';
+import { Cliente } from 'src/cliente/entities/cliente.entity';
+import { Vendedor } from 'src/vendedor/entities/vendedor.entity';
+import { Admin } from 'src/admin/entities/admin.entity';
+// import { PrestamoResolver } from './prestamo/prestamo.resolver';
+import { PrestamoModule } from './prestamo/prestamos.module';
+import { Prestamo } from './prestamo/entities/prestamo.entity';
+import { PagoPrestamo } from './prestamo/entities/pago-prestamo.entity';
+import { ClienteModule } from './cliente/cliente.module';
+import { AdminModule } from './admin/admin.module';
 
-@Global()
 @Module({
-  //'postgresql://neondb_owner:npg_Th3P0LZKVxWq@ep-shiny-frog-a8h3mngk-pooler.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require'
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: 5432,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      ssl: {
-        rejectUnauthorized: false,
-      },
-      synchronize: true,
-
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
     }),
-    UserModule,
-    LoansModule,
-    PaymentModule,
-    AuthModule],
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST', 'localhost'),
+        port: configService.get('DB_PORT', 5432),
+        username: configService.get('DB_USERNAME', 'postgres'),
+        password: configService.get('DB_PASSWORD', 'password'),
+        database: configService.get('DB_DATABASE', 'cocodrijo2'),
+        entities: [User, Cliente, Vendedor, Admin, Prestamo, PagoPrestamo],
+        synchronize: configService.get('NODE_ENV') !== 'production',
+        dropSchema: false,
+        // logging: configService.get('NODE_ENV') === 'development',
+        ssl: {
+          rejectUnauthorized: false, // 👈 importante para conexiones SSL en ambientes no verificados
+        },
+      }),
+
+      inject: [ConfigService],
+    }),
+    AuthModule,
+    PrestamoModule,
+    ClienteModule,
+    AdminModule,
+  ],
   controllers: [],
   providers: [],
 })

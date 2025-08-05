@@ -1,98 +1,223 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Sistema de Préstamos - API REST
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Sistema de gestión de préstamos desarrollado con NestJS, PostgreSQL y JWT para autenticación.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Características
 
-## Description
+- **Autenticación JWT** con roles diferenciados
+- **Gestión de usuarios** por roles: Cliente, Vendedor, Admin
+- **Base de datos PostgreSQL** con TypeORM
+- **Validación de datos** con class-validator
+- **Arquitectura modular** y escalable
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Requisitos Previos
 
-## Project setup
+- Node.js (v16 o superior)
+- PostgreSQL (v12 o superior)
+- npm o yarn
+
+## 🔧 Instalación
+
+1. **Clonar el repositorio**
 
 ```bash
-$ npm install
+git clone <url-del-repositorio>
+cd prestamos-api
 ```
 
-## Compile and run the project
+2. **Instalar dependencias**
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+3. **Configurar variables de entorno**
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp .env.example .env
+# Editar el archivo .env con tus configuraciones
 ```
 
-## Deployment
+4. **Crear la base de datos en PostgreSQL**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```sql
+CREATE DATABASE prestamos_db;
+```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+5. **Ejecutar la aplicación**
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Desarrollo
+npm run start:dev
+
+# Producción
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+6. **Ejecutar el seeder inicial (opcional)**
 
-## Resources
+```bash
+npm run seed
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 🏗️ Estructura del Proyecto
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```
+src/
+├── auth/                   # Módulo de autenticación
+│   ├── dto/               # DTOs para login y registro
+│   ├── guards/            # Guards JWT y roles
+│   ├── strategies/        # Estrategia JWT
+│   └── decorators/        # Decoradores personalizados
+├── entities/              # Entidades TypeORM
+│   ├── user.entity.ts     # Usuario base
+│   ├── cliente.entity.ts  # Perfil de cliente
+│   ├── vendedor.entity.ts # Perfil de vendedor
+│   └── admin.entity.ts    # Perfil de administrador
+├── database/              # Scripts de base de datos
+└── main.ts               # Punto de entrada
+```
 
-## Support
+## 🔑 Endpoints de Autenticación
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Registro de Usuario
 
-## Stay in touch
+```http
+POST /api/v1/auth/register
+Content-Type: application/json
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+{
+  "cedula": "12345678",
+  "password": "password123",
+  "email": "usuario@ejemplo.com",
+  "role": "cliente", // cliente | vendedor | admin
+  "nombres": "Juan",
+  "apellidos": "Pérez",
+  "telefono": "+573001234567",
+  "direccion": "Calle 123 #45-67",
+  // Campos adicionales según el rol...
+}
+```
 
-## License
+### Login
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```http
+POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+  "cedula": "12345678",
+  "password": "password123"
+}
+```
+
+### Obtener Perfil (Autenticado)
+
+```http
+GET /api/v1/auth/profile
+Authorization: Bearer <jwt-token>
+```
+
+## 👥 Roles y Permisos
+
+### Cliente
+
+- Puede iniciar sesión y consultar su perfil
+- Campos específicos: fecha de nacimiento, profesión, ingresos mensuales, referencias
+
+### Vendedor
+
+- Puede iniciar sesión y gestionar clientes (próximamente)
+- Campos específicos: sucursal, comisión, ventas acumuladas
+
+### Administrador
+
+- Acceso completo al sistema
+- Campos específicos: cargo, permisos especiales
+
+## 🛡️ Endpoints Protegidos por Rol
+
+```http
+# Solo administradores
+GET /api/v1/auth/admin-only
+Authorization: Bearer <jwt-token>
+
+# Solo vendedores
+GET /api/v1/auth/seller-only
+Authorization: Bearer <jwt-token>
+
+# Solo clientes
+GET /api/v1/auth/client-only
+Authorization: Bearer <jwt-token>
+
+# Vendedores y administradores
+GET /api/v1/auth/seller-admin
+Authorization: Bearer <jwt-token>
+```
+
+## 📦 Scripts Disponibles
+
+```bash
+# Desarrollo
+npm run start:dev          # Inicia en modo desarrollo con hot reload
+
+# Producción
+npm run build             # Construye la aplicación
+npm run start:prod        # Inicia en modo producción
+
+# Base de datos
+npm run seed              # Ejecuta el seeder inicial
+
+# Testing
+npm run test              # Ejecuta las pruebas unitarias
+npm run test:e2e          # Ejecuta las pruebas end-to-end
+
+# Código
+npm run lint              # Ejecuta el linter
+npm run format            # Formatea el código
+```
+
+## 👤 Usuarios de Prueba (Seeder)
+
+Después de ejecutar `npm run seed`:
+
+| Rol      | Cédula   | Password    | Email                  |
+| -------- | -------- | ----------- | ---------------------- |
+| Admin    | 12345678 | admin123    | admin@prestamos.com    |
+| Vendedor | 87654321 | vendedor123 | vendedor@prestamos.com |
+| Cliente  | 11223344 | cliente123  | cliente@ejemplo.com    |
+
+## 🔄 Próximas Funcionalidades
+
+- [ ] Gestión de préstamos
+- [ ] Cálculo de intereses
+- [ ] Sistema de pagos
+- [ ] Reportes y estadísticas
+- [ ] Notificaciones
+- [ ] Dashboard para cada rol
+
+## 🛠️ Tecnologías Utilizadas
+
+- **NestJS** - Framework de Node.js
+- **TypeORM** - ORM para TypeScript
+- **PostgreSQL** - Base de datos relacional
+- **JWT** - Autenticación por tokens
+- **bcryptjs** - Encriptación de contraseñas
+- **class-validator** - Validación de DTOs
+- **Passport** - Middleware de autenticación
+
+## 📝 Notas de Desarrollo
+
+- Las contraseñas se encriptan usando bcryptjs con salt de 12 rounds
+- Los tokens JWT tienen una expiración de 24 horas por defecto
+- La aplicación usa transformación automática de tipos en los DTOs
+- Se implementa soft delete para mantener integridad referencial
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
